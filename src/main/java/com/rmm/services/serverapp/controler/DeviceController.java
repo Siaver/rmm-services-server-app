@@ -1,13 +1,19 @@
 package com.rmm.services.serverapp.controler;
 
+import com.rmm.services.serverapp.controler.request.CreateOrUpdateDeviceDTO;
+import com.rmm.services.serverapp.controler.response.DeviceDTO;
+import com.rmm.services.serverapp.model.Customer;
+import com.rmm.services.serverapp.model.Device;
+import com.rmm.services.serverapp.service.CustomerService;
+import com.rmm.services.serverapp.service.DeviceService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.rmm.services.serverapp.model.Device;
-import com.rmm.services.serverapp.service.DeviceService;
-import com.rmm.services.serverapp.controler.request.CreateOrUpdateDeviceDTO;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -16,30 +22,47 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * API resources for devices.
  */
 @RestController
-@RequestMapping("/api/devices")
+@RequestMapping("/api")
 public class DeviceController {
     private final DeviceService deviceService;
+    private final CustomerService customerService;
+    private final ModelMapper modelMapper;
 
-    public DeviceController(DeviceService deviceService) {
+    public DeviceController(DeviceService deviceService, CustomerService customerService, ModelMapper modelMapper) {
         this.deviceService = deviceService;
+        this.customerService = customerService;
+        this.modelMapper = modelMapper;
+    }
+
+    /**
+     * Handler method to retrieve a list of customer devices.
+     */
+    @GetMapping("/customers/{customerId}/devices")
+    public ResponseEntity<List<DeviceDTO>> getDevices(@PathVariable int customerId) {
+        Customer customer = this.customerService.findById(customerId);
+
+        List<DeviceDTO> devices = customer.getDevices().stream()
+                .map(device -> modelMapper.map(device, DeviceDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(devices);
     }
 
     /**
      * Handler method to retrieve a device.
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<Device> getDevice(@PathVariable int id) {
+    @GetMapping("/devices/{id}")
+    public ResponseEntity<DeviceDTO> getDevice(@PathVariable Long id) {
         Device device = deviceService.findById(id);
-        return ResponseEntity.ok(device);
+        return ResponseEntity.ok(modelMapper.map(device, DeviceDTO.class));
     }
 
     /**
      * Handler method to create a new device.
      */
-    @PostMapping
-    public ResponseEntity<?> createDevice(@RequestBody @Valid CreateOrUpdateDeviceDTO input) {
-        Device device = new Device(input.getName(), input.getType());
-        Device newDevice = deviceService.create(device);
+    @PostMapping("/customers/{customerId}/devices")
+    public ResponseEntity<?> createDevice(@PathVariable int customerId, @RequestBody @Valid CreateOrUpdateDeviceDTO input) {
+        Device newDevice = deviceService.create(customerId, input.getName(), input.getType());
 
         URI location = linkTo(methodOn(getClass()).getDevice(newDevice.getId())).toUri();
         return ResponseEntity.created(location).build();
@@ -48,8 +71,8 @@ public class DeviceController {
     /**
      * Handler method to update an existing device.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateDevice(@PathVariable int id, @RequestBody @Valid CreateOrUpdateDeviceDTO input) {
+    @PutMapping("/devices/{id}")
+    public ResponseEntity<Void> updateDevice(@PathVariable Long id, @RequestBody @Valid CreateOrUpdateDeviceDTO input) {
         Device device = deviceService.findById(id);
         device.setName(input.getName());
         device.setType(input.getType());
@@ -62,8 +85,8 @@ public class DeviceController {
     /**
      * Handler method to delete a device.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Device> deleteDevice(@PathVariable int id) {
+    @DeleteMapping("/devices/{id}")
+    public ResponseEntity<Device> deleteDevice(@PathVariable Long id) {
         deviceService.delete(id);
         return ResponseEntity.noContent().build();
     }

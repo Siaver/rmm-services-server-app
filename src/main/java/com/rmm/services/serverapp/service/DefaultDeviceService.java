@@ -1,19 +1,23 @@
 package com.rmm.services.serverapp.service;
 
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
+import com.rmm.services.serverapp.model.Customer;
 import com.rmm.services.serverapp.model.Device;
+import com.rmm.services.serverapp.model.DeviceType;
 import com.rmm.services.serverapp.repository.DeviceRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Default implementation of {@link DeviceService}'
  */
-@Component
+@Service
 public class DefaultDeviceService implements DeviceService {
     private final DeviceRepository deviceRepository;
+    private final CustomerService customerService;
 
-    public DefaultDeviceService(DeviceRepository deviceRepository) {
+    public DefaultDeviceService(DeviceRepository deviceRepository, CustomerService customerService) {
         this.deviceRepository = deviceRepository;
+        this.customerService = customerService;
     }
 
     /**
@@ -23,7 +27,7 @@ public class DefaultDeviceService implements DeviceService {
      * @return The found device, otherwise throws a {@link ObjectNotFoundException}.
      */
     @Override
-    public Device findById(int id) throws ObjectNotFoundException {
+    public Device findById(Long id) throws ObjectNotFoundException {
         return deviceRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("There is no metric with id: %s", id)));
     }
@@ -31,11 +35,16 @@ public class DefaultDeviceService implements DeviceService {
     /**
      * Creates a new device record.
      *
-     * @param device The device to be created.
+     * @param customerId The customer id.
+     * @param name       The name of the device.
+     * @param type       The type of the device.
      * @return The created device.
      */
     @Override
-    public Device create(Device device) {
+    public Device create(int customerId, String name, DeviceType type) {
+        Customer customer = this.customerService.findById(customerId);
+
+        Device device = new Device(name, type, customer);
         return deviceRepository.save(device);
     }
 
@@ -56,7 +65,7 @@ public class DefaultDeviceService implements DeviceService {
      * @param id The device id.
      */
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         deviceRepository.deleteById(id);
     }
 }

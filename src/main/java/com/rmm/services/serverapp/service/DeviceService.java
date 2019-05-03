@@ -1,13 +1,12 @@
 package com.rmm.services.serverapp.service;
 
-import com.rmm.services.serverapp.model.Device;
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
-import org.springframework.stereotype.Service;
+import com.rmm.services.serverapp.model.Device;
+import com.rmm.services.serverapp.model.DeviceType;
 
 /**
  * Provides an abstraction for managing device operations.
  */
-@Service
 public interface DeviceService {
     /**
      * Finds a device by the given id.
@@ -15,15 +14,17 @@ public interface DeviceService {
      * @param id The device id.
      * @return The found device, otherwise throws a {@link ObjectNotFoundException}.
      */
-    Device findById(int id) throws ObjectNotFoundException;
+    Device findById(Long id) throws ObjectNotFoundException;
 
     /**
      * Creates a new device record.
      *
-     * @param device The device to be created.
+     * @param customerId The customer id.
+     * @param name       The name of the device.
+     * @param type       The type of the device.
      * @return The created device.
      */
-    Device create(Device device);
+    Device create(int customerId, String name, DeviceType type);
 
     /**
      * Updates an existing device.
@@ -38,5 +39,5 @@ public interface DeviceService {
      *
      * @param id The device id.
      */
-    void delete(int id);
+    void delete(Long id);
 }
