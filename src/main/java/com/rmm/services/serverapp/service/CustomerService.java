@@ -3,6 +3,7 @@ package com.rmm.services.serverapp.service;
 import com.rmm.services.serverapp.exception.DomainException;
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
 import com.rmm.services.serverapp.model.Customer;
+import com.rmm.services.serverapp.model.MonthlyBilling;
 import com.rmm.services.serverapp.model.Service;
 
 /**
@@ -32,4 +33,12 @@ public interface CustomerService {
      * @param service    The service to be removed.
      */
     void removeService(int customerId, Service service);
+
+    /**
+     * Calculates the monthly billing base on the customer services.
+     *
+     * @param customerId The customer id.
+     * @return A monthly service cost.
+     */
+    MonthlyBilling calculateMonthlyBilling(int customerId);
 }

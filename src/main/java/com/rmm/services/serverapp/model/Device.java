@@ -73,4 +73,8 @@ public class Device {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public Double getDeviceCost() {
+        return COST;
+    }
 }

@@ -2,6 +2,7 @@ package com.rmm.services.serverapp.controler;
 
 import com.rmm.services.serverapp.controler.request.AddServiceDTO;
 import com.rmm.services.serverapp.controler.response.ServiceDTO;
+import com.rmm.services.serverapp.model.MonthlyBilling;
 import com.rmm.services.serverapp.model.Service;
 import com.rmm.services.serverapp.service.CustomerService;
 import com.rmm.services.serverapp.service.ServiceService;
@@ -65,6 +66,15 @@ public class ServiceController {
         this.customerService.removeService(customerId, service);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Handler method to retrieve the monthly billing amount for the customer's services.
+     */
+    @GetMapping("/customers/{customerId}/monthly-billing")
+    public ResponseEntity<MonthlyBilling> getMonthlyBilling(@PathVariable int customerId) {
+        MonthlyBilling billing = this.customerService.calculateMonthlyBilling(customerId);
+        return ResponseEntity.ok(billing);
     }
 
     private List<ServiceDTO> createServicesResponse(Iterable<Service> services) {

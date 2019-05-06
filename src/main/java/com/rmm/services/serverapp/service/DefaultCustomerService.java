@@ -3,8 +3,14 @@ package com.rmm.services.serverapp.service;
 import com.rmm.services.serverapp.exception.DomainException;
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
 import com.rmm.services.serverapp.model.Customer;
+import com.rmm.services.serverapp.model.Device;
+import com.rmm.services.serverapp.model.MonthlyBilling;
 import com.rmm.services.serverapp.model.Service;
 import com.rmm.services.serverapp.repository.CustomerRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.StreamSupport;
 
 /**
  * Default implementation if {@link CustomerService}.
@@ -62,5 +68,40 @@ public class DefaultCustomerService implements CustomerService {
             customer.removeService(service);
             this.customerRepository.save(customer);
         }
+    }
+
+    /**
+     * Calculates the monthly billing base on the customer's services.
+     *
+     * @param customerId The customer id.
+     * @return A monthly service cost.
+     */
+    @Override
+    public MonthlyBilling calculateMonthlyBilling(int customerId) {
+        Customer customer = this.findById(customerId);
+        Iterable<Device> devices = customer.getDevices();
+
+        Map<String, Double> summary = new HashMap<>();
+        Double devicesCost = StreamSupport.stream(devices.spliterator(), false)
+                .map(Device::getDeviceCost)
+                .reduce(Double::sum)
+                .orElse(0.0);
+
+        summary.put("Devices", devicesCost);
+
+        for (Service service : customer.getServices()) {
+            for (Device device : devices) {
+                Double costByDevice = service.getCostByDevice(device.getType()).getAmount();
+                Double totalServiceCost = summary.getOrDefault(service.getName(), 0.0) + costByDevice;
+
+                summary.put(service.getName(), totalServiceCost);
+            }
+        }
+
+        Double totalCost = summary.values().stream()
+                .reduce(0.0, Double::sum);
+
+
+        return new MonthlyBilling(totalCost, summary);
     }
 }
