@@ -8,6 +8,7 @@ import com.rmm.services.serverapp.model.MonthlyBilling;
 import com.rmm.services.serverapp.model.Service;
 import com.rmm.services.serverapp.repository.CustomerRepository;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
@@ -81,25 +82,25 @@ public class DefaultCustomerService implements CustomerService {
         Customer customer = this.findById(customerId);
         Iterable<Device> devices = customer.getDevices();
 
-        Map<String, Double> summary = new HashMap<>();
-        Double devicesCost = StreamSupport.stream(devices.spliterator(), false)
+        Map<String, BigDecimal> summary = new HashMap<>();
+        BigDecimal devicesCost = StreamSupport.stream(devices.spliterator(), false)
                 .map(Device::getDeviceCost)
-                .reduce(Double::sum)
-                .orElse(0.0);
+                .reduce(BigDecimal::add)
+                .orElse(new BigDecimal(0));
 
         summary.put("Devices", devicesCost);
 
         for (Service service : customer.getServices()) {
             for (Device device : devices) {
-                Double costByDevice = service.getCostByDevice(device.getType()).getAmount();
-                Double totalServiceCost = summary.getOrDefault(service.getName(), 0.0) + costByDevice;
+                BigDecimal costByDevice = service.getCostByDevice(device.getType()).getAmount();
+                BigDecimal totalServiceCost = summary.getOrDefault(service.getName(), new BigDecimal(0)).add(costByDevice);
 
                 summary.put(service.getName(), totalServiceCost);
             }
         }
 
-        Double totalCost = summary.values().stream()
-                .reduce(0.0, Double::sum);
+        BigDecimal totalCost = summary.values().stream()
+                .reduce(new BigDecimal(0), BigDecimal::add);
 
 
         return new MonthlyBilling(totalCost, summary);

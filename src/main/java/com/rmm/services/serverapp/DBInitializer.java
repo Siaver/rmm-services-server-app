@@ -9,6 +9,8 @@ import com.rmm.services.serverapp.repository.ServiceRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 /**
  * Database initializer that populates the database with some default data
  */
@@ -31,8 +33,8 @@ public class DBInitializer implements CommandLineRunner {
 
         if (this.serviceRepository.count() == 0) {
             Service service = new Service("Antivirus");
-            service.addCost(new ServiceCost(service, DeviceType.WINDOWS_SERVER, 5.0));
-            service.addCost(new ServiceCost(service, DeviceType.MAC, 7.0));
+            service.addCost(new ServiceCost(service, DeviceType.WINDOWS_SERVER, new BigDecimal(5)));
+            service.addCost(new ServiceCost(service, DeviceType.MAC, new BigDecimal(7)));
 
             this.serviceRepository.save(service);
         }

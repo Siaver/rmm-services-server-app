@@ -1,6 +1,7 @@
 package com.rmm.services.serverapp.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Represents a device in the system.
@@ -11,7 +12,7 @@ public class Device {
     /**
      * Device cost in dollars.
      */
-    private static final Double COST = 4.0;
+    private static final BigDecimal COST = new BigDecimal(4.0);
 
     /**
      * Represents the unique identifier for this device.
@@ -74,7 +75,7 @@ public class Device {
         this.customer = customer;
     }
 
-    public Double getDeviceCost() {
+    public BigDecimal getDeviceCost() {
         return COST;
     }
 }

@@ -11,7 +11,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and()
-                .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/**").hasRole("user")
@@ -22,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/configuration/security",
                         "/swagger-ui.html",
-                        "/actuator/**").permitAll().and();
+                        "/actuator/**").permitAll();
     }
 
     @Override

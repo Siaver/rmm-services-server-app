@@ -2,6 +2,7 @@ package com.rmm.services.serverapp.controler.response;
 
 import com.rmm.services.serverapp.model.ServiceCost;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public class ServiceDTO {
 
     private String name;
 
-    private Map<String, Double> cost;
+    private Map<String, BigDecimal> cost;
 
     public ServiceDTO(int id, String name, Iterable<ServiceCost> costValues) {
         this.id = id;
@@ -26,12 +27,12 @@ public class ServiceDTO {
         return name;
     }
 
-    public Map<String, Double> getCost() {
+    public Map<String, BigDecimal> getCost() {
         return cost;
     }
 
-    private Map<String, Double> buildCost(Iterable<ServiceCost> costValues) {
-        Map<String, Double> costs = new HashMap<>();
+    private Map<String, BigDecimal> buildCost(Iterable<ServiceCost> costValues) {
+        Map<String, BigDecimal> costs = new HashMap<>();
 
         for (ServiceCost cost : costValues) {
             costs.put(cost.getDeviceType().name(), cost.getAmount());

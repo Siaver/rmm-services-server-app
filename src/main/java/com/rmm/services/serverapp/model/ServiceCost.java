@@ -1,6 +1,7 @@
 package com.rmm.services.serverapp.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Represents a service cost in the system.
@@ -26,7 +27,7 @@ public class ServiceCost {
      * Represents the amount value in dollars.
      */
     @Column
-    private Double amount;
+    private BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
@@ -41,7 +42,7 @@ public class ServiceCost {
     /**
      * Creates a new instance of {@link ServiceCost}.
      */
-    public ServiceCost(Service service, DeviceType deviceType, Double amount) {
+    public ServiceCost(Service service, DeviceType deviceType, BigDecimal amount) {
         this.service = service;
         this.deviceType = deviceType;
         this.amount = amount;
@@ -55,7 +56,7 @@ public class ServiceCost {
         return deviceType;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
