@@ -27,7 +27,7 @@ public class SwaggerConfig {
     public Docket api(TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.rmm.services.serverapp"))
+                .apis(RequestHandlerSelectors.basePackage("com.rmm.services.serverapp.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .pathMapping("/")

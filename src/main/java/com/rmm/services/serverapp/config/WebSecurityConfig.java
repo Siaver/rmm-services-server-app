@@ -1,27 +1,28 @@
 package com.rmm.services.serverapp.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").hasRole("user")
+                .antMatchers("/api/**").hasRole("USER")
                 .antMatchers(
-                        "/webjars/**",
                         "/v2/api-docs",
+                        "/webjars/**",
                         "/configuration/ui/**",
                         "/swagger-resources/**",
                         "/configuration/security",
-                        "/swagger-ui.html",
-                        "/actuator/**").permitAll();
+                        "/swagger-ui.html").permitAll();
     }
 
     @Override
@@ -29,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("user")
                 .password(encoder().encode("12345"))
-                .roles("user");
+                .roles("USER");
     }
 
     @Bean
