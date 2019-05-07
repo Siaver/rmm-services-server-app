@@ -20,6 +20,12 @@ public class MonthlyBilling {
     /**
      * Creates a new instance of {@link MonthlyBilling}.
      */
+    public MonthlyBilling() {
+    }
+
+    /**
+     * Creates a new instance of {@link MonthlyBilling}.
+     */
     public MonthlyBilling(BigDecimal total, Map<String, BigDecimal> summary) {
         this.total = total;
         this.summary = summary;
