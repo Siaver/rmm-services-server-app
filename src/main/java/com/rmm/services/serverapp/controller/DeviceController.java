@@ -6,7 +6,11 @@ import com.rmm.services.serverapp.model.Customer;
 import com.rmm.services.serverapp.model.Device;
 import com.rmm.services.serverapp.service.CustomerService;
 import com.rmm.services.serverapp.service.DeviceService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +65,13 @@ public class DeviceController {
      * Handler method to create a new device.
      */
     @PostMapping("/customers/{customerId}/devices")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 201,
+                    message = "New device created",
+                    responseHeaders = @ResponseHeader(name = "location", description = "The resulting URI of the newly-created service", response = String.class)
+            )
+    })
     public ResponseEntity<?> createDevice(@PathVariable int customerId, @RequestBody @Valid CreateOrUpdateDeviceDTO input) {
         Device newDevice = deviceService.create(customerId, input.getName(), input.getType());
 
@@ -72,6 +83,7 @@ public class DeviceController {
      * Handler method to update an existing device.
      */
     @PutMapping("/devices/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> updateDevice(@PathVariable Long id, @RequestBody @Valid CreateOrUpdateDeviceDTO input) {
         Device device = deviceService.findById(id);
         device.setName(input.getName());
@@ -86,6 +98,7 @@ public class DeviceController {
      * Handler method to delete a device.
      */
     @DeleteMapping("/devices/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Device> deleteDevice(@PathVariable Long id) {
         deviceService.delete(id);
         return ResponseEntity.noContent().build();

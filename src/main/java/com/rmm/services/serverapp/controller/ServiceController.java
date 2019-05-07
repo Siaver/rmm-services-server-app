@@ -6,6 +6,7 @@ import com.rmm.services.serverapp.model.MonthlyBilling;
 import com.rmm.services.serverapp.model.Service;
 import com.rmm.services.serverapp.service.CustomerService;
 import com.rmm.services.serverapp.service.ServiceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,7 @@ public class ServiceController {
     /**
      * Handler method to add an existing service to a customer.
      */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/customers/{customerId}/services")
     public ResponseEntity<Void> addCustomerService(@PathVariable int customerId, @RequestBody @Valid AddServiceDTO input) {
         Service service = this.serviceService.findById(input.getId());
@@ -60,6 +62,7 @@ public class ServiceController {
     /**
      * Handler method to remove a customer service.
      */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/customers/{customerId}/services/{serviceId}")
     public ResponseEntity<Void> removeCustomerService(@PathVariable int customerId, @PathVariable int serviceId) {
         Service service = this.serviceService.findById(serviceId);
