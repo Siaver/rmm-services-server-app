@@ -34,6 +34,7 @@ public class DefaultServiceService implements ServiceService {
      */
     @Override
     public Service findById(int id) throws ObjectNotFoundException {
-        return null;
+        return serviceRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("There is no service with id: %s", id)));
     }
 }

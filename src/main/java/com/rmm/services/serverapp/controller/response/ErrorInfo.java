@@ -1,4 +1,4 @@
-package com.rmm.services.serverapp.controler.response;
+package com.rmm.services.serverapp.controller.response;
 
 import java.util.ArrayList;
 import java.util.List;

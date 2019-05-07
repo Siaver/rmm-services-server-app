@@ -2,10 +2,7 @@ package com.rmm.services.serverapp.service;
 
 import com.rmm.services.serverapp.exception.DomainException;
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
-import com.rmm.services.serverapp.model.Customer;
-import com.rmm.services.serverapp.model.Device;
-import com.rmm.services.serverapp.model.MonthlyBilling;
-import com.rmm.services.serverapp.model.Service;
+import com.rmm.services.serverapp.model.*;
 import com.rmm.services.serverapp.repository.CustomerRepository;
 
 import java.math.BigDecimal;
@@ -92,7 +89,12 @@ public class DefaultCustomerService implements CustomerService {
 
         for (Service service : customer.getServices()) {
             for (Device device : devices) {
-                BigDecimal costByDevice = service.getCostByDevice(device.getType()).getAmount();
+                ServiceCost serviceCost = service.getCostByDevice(device.getType());
+                if (serviceCost == null) {
+                    continue;
+                }
+
+                BigDecimal costByDevice = serviceCost.getAmount();
                 BigDecimal totalServiceCost = summary.getOrDefault(service.getName(), new BigDecimal(0)).add(costByDevice);
 
                 summary.put(service.getName(), totalServiceCost);

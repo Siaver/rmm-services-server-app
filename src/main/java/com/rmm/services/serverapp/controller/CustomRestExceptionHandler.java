@@ -1,7 +1,7 @@
-package com.rmm.services.serverapp.controler;
+package com.rmm.services.serverapp.controller;
 
-import com.rmm.services.serverapp.controler.response.ErrorInfo;
-import com.rmm.services.serverapp.controler.response.ValidationErrorInfo;
+import com.rmm.services.serverapp.controller.response.ErrorInfo;
+import com.rmm.services.serverapp.controller.response.ValidationErrorInfo;
 import com.rmm.services.serverapp.exception.DomainException;
 import com.rmm.services.serverapp.exception.ObjectNotFoundException;
 import org.springframework.http.HttpHeaders;

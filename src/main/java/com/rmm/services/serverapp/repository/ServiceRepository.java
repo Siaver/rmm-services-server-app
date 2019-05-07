@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Handles service operations in a persistence storage.
  */
 @Repository
-public interface ServiceRepository extends CrudRepository<Service, Long> {
+public interface ServiceRepository extends CrudRepository<Service, Integer> {
 }

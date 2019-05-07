@@ -15,14 +15,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").hasRole("USER")
-                .antMatchers(
-                        "/v2/api-docs",
-                        "/webjars/**",
-                        "/configuration/ui/**",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html").permitAll();
+                .antMatchers("/api/**").hasRole("USER");
     }
 
     @Override

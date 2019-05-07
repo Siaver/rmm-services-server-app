@@ -1,4 +1,4 @@
-package com.rmm.services.serverapp.controler.request;
+package com.rmm.services.serverapp.controller.request;
 
 import javax.validation.constraints.NotNull;
 
